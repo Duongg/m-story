@@ -49,6 +49,7 @@ fun HomeScreen(
     onMenuClicked: () -> Unit,
     navigateToWrite: () -> Unit,
     onSignOutClicked: () -> Unit,
+    navigateToWriteWithArg: (String) -> Unit,
     stories: Stories,
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
@@ -71,7 +72,11 @@ fun HomeScreen(
                padding = it
                when(stories){
                    is RequestState.Success -> {
-                       HomeContent(paddingValues = it, stories = stories.data, onClick = {})
+                       HomeContent(
+                           paddingValues = it,
+                           stories = stories.data,
+                           onClick = navigateToWriteWithArg,
+                       )
                    }
 
                    is RequestState.Error -> {

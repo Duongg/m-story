@@ -7,6 +7,6 @@ sealed class Screen(val route: String) {
     object Home : Screen(route = "home_screen")
     object Write :
         Screen(route = "write_screen?$WRITE_SCREEN_ARGUMENT_KEY={$WRITE_SCREEN_ARGUMENT_KEY}") {
-        fun passStory(storyId: String) = "write_screen?$WRITE_SCREEN_ARGUMENT_KEY=$storyId"
+        fun passStoryId(storyId: String) = "write_screen?$WRITE_SCREEN_ARGUMENT_KEY=$storyId"
     }
 }

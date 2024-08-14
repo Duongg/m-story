@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.example.mstory.model.Mood
 import com.example.mstory.model.Story
@@ -115,7 +116,7 @@ fun StoryHolder(story: Story, onClick: (String) -> Unit) {
                 Text(
                     modifier = Modifier.padding(all = 14.dp),
                     text = story.description,
-                    style = TextStyle(fontSize = MaterialTheme.typography.bodyLarge.fontSize),
+                    style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize),
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis
                 )

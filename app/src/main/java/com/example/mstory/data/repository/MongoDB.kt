@@ -10,6 +10,7 @@ import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
+import io.realm.kotlin.types.ObjectId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -62,6 +63,83 @@ object MongoDB: MongoRepository {
             flow {
                 emit(RequestState.Error(UserNotAuthenticatedException()))
             }
+        }
+    }
+
+    override fun getSelectedStory(storyId: ObjectId): Flow<RequestState<Story>> {
+        return if(user != null){
+            try {
+                realm.query<Story>(query = "_id == $0", storyId).asFlow().map {
+                    RequestState.Success(data = it.list.first())
+                }
+            }catch (e: Exception){
+                flow{ emit(RequestState.Error(e)) }
+            }
+        }else{
+           flow{ emit(RequestState.Error(UserNotAuthenticatedException())) }
+        }
+    }
+
+    override suspend fun insertNewStory(story: Story): RequestState<Story> {
+        return if(user != null){
+            realm.write {
+                try {
+                    val addedStory = copyToRealm(story.apply { ownerId = user.identity })
+                    RequestState.Success(data = addedStory)
+                }catch (e: Exception){
+                    RequestState.Error(e)
+                }
+            }
+        }else{
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun updateStory(story: Story): RequestState<Story> {
+        return if(user != null){
+            realm.write {
+                try {
+                   val queriedStory = query<Story>(query = "_id == $0", story._id).first().find()
+                    if(queriedStory != null){
+                        queriedStory.title = story.title
+                        queriedStory.description = story.description
+                        queriedStory.mood = story.mood
+                        queriedStory.images = story.images
+                        queriedStory.date = story.date
+                        RequestState.Success(data = queriedStory)
+                    }else{
+                        RequestState.Error(Exception("Queried Story does not exist"))
+                    }
+                }catch (e: Exception){
+                    RequestState.Error(e)
+                }
+            }
+        }else{
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun deleteStory(id: ObjectId): RequestState<Story> {
+        return if(user != null){
+            realm.write {
+                val story = query<Story>(
+                    query = "_id == $0 AND ownerId == $1",
+                    id,
+                    user.identity
+                ).first().find()
+                if (story != null) {
+                    try {
+                        delete(story)
+                        RequestState.Success(data = story)
+                    } catch (e: Exception){
+                        RequestState.Error(e)
+                    }
+                }else{
+                    RequestState.Error(Exception("Story does not exist"))
+                }
+            }
+        }else{
+            RequestState.Error(UserNotAuthenticatedException())
         }
     }
 }
