@@ -4,15 +4,15 @@ plugins {
     id 'io.realm.kotlin'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
-//    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
 }
 
 android {
-    namespace 'com.example.mstory'
+    namespace 'com.project.mstory'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.mstory"
+        applicationId "com.project.mstory"
         minSdk 28
         targetSdk 34
         versionCode 1
@@ -113,7 +113,7 @@ dependencies {
     implementation 'com.github.stevdza-san:MessageBarCompose:1.0.5'
 
     // One-Tap Compose
-    implementation 'com.github.stevdza-san:OneTapCompose:1.0.0'
+    implementation 'com.github.stevdza-san:OneTapCompose:1.0.3'
 
     // Desugar JDK
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.0'

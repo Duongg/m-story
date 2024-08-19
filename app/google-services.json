@@ -1,0 +1,34 @@
+{
+  "project_info": {
+    "project_number": "342284843824",
+    "project_id": "mstory-d73cc",
+    "storage_bucket": "mstory-d73cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342284843824:android:1a9d9e580a79fd03b1e6f5",
+        "android_client_info": {
+          "package_name": "com.project.mstory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvm_GxJlVzvRpp7Xf6uhpf0MfQD1PP_As"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342284843824-g5qsmech4q15fnigo17dp2ph696aphif.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
