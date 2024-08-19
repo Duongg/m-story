@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -19,10 +20,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.project.mstory.data.repository.MongoDB
-import com.project.mstory.model.GalleryImage
 import com.project.mstory.model.Mood
-import com.project.mstory.model.rememberGalleryState
 import com.project.mstory.presentation.components.MStoryDialog
 import com.project.mstory.presentation.screens.auth.AuthenticationScreen
 import com.project.mstory.presentation.screens.auth.AuthenticationViewModel
@@ -33,8 +34,6 @@ import com.project.mstory.presentation.screens.write.WriteViewModel
 import com.project.mstory.util.Constant.APP_ID
 import com.project.mstory.util.Constant.WRITE_SCREEN_ARGUMENT_KEY
 import com.project.mstory.util.RequestState
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -43,7 +42,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun SetupNavGraph(startDestination: String, navController: NavHostController, onDataLoaded: () -> Unit) {
+fun SetupNavGraph(
+    startDestination: String,
+    navController: NavHostController,
+    onDataLoaded: () -> Unit
+) {
     NavHost(startDestination = startDestination, navController = navController) {
         authenticationRoute(
             navigateToHome = {
@@ -56,7 +59,7 @@ fun SetupNavGraph(startDestination: String, navController: NavHostController, on
             navigateToWrite = {
                 navController.navigate(Screen.Write.route)
             },
-            navigateToAuth =  {
+            navigateToAuth = {
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication.route)
             },
@@ -84,7 +87,7 @@ fun NavGraphBuilder.authenticationRoute(
         val oneTapState = rememberOneTapSignInState()
         val messageBarState = rememberMessageBarState()
 
-        LaunchedEffect(key1 = Unit){
+        LaunchedEffect(key1 = Unit) {
             onDataLoaded()
         }
         AuthenticationScreen(
@@ -109,7 +112,7 @@ fun NavGraphBuilder.authenticationRoute(
                     }
                 )
             },
-            onFailedFirebaseSignIn = {message ->
+            onFailedFirebaseSignIn = { message ->
                 messageBarState.addError(Exception(message))
                 viewModel.setLoading(false)
             },
@@ -127,7 +130,7 @@ fun NavGraphBuilder.homeRoute(
     navigateToWriteWithArg: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onDataLoaded: () -> Unit,
-    ) {
+) {
     composable(route = Screen.Home.route) {
         val viewModel: HomeViewModel = viewModel()
         val stories by viewModel.stories
@@ -137,8 +140,8 @@ fun NavGraphBuilder.homeRoute(
             mutableStateOf(false)
         }
 
-        LaunchedEffect(key1 = stories){
-            if(stories !is RequestState.Loading){
+        LaunchedEffect(key1 = stories) {
+            if (stories !is RequestState.Loading) {
                 onDataLoaded()
             }
         }
@@ -157,7 +160,7 @@ fun NavGraphBuilder.homeRoute(
             stories = stories,
         )
 
-        LaunchedEffect(key1 = Unit){
+        LaunchedEffect(key1 = Unit) {
             MongoDB.configureTheRealm()
         }
 
@@ -167,11 +170,11 @@ fun NavGraphBuilder.homeRoute(
             dialogOpened = signOutDialogOpened,
             onClosed = { signOutDialogOpened = false },
             onConfirm = {
-                scope.launch (Dispatchers.IO){
+                scope.launch(Dispatchers.IO) {
                     val user = App.create(APP_ID).currentUser
-                    if(user != null){
+                    if (user != null) {
                         user.logOut()
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             navigateToAuth()
                         }
                     }
@@ -191,18 +194,18 @@ fun NavGraphBuilder.writeRoute(onBackPress: () -> Unit) {
             defaultValue = null
         })
     ) {
-        val viewModel: WriteViewModel = viewModel()
+        val viewModel: WriteViewModel = hiltViewModel()
         val pagerState = rememberPagerState()
         val uiState = viewModel.uiState
         val pageNumber by remember {
-            derivedStateOf{pagerState.currentPage}
+            derivedStateOf { pagerState.currentPage }
         }
         val context = LocalContext.current
-        val galleryState = rememberGalleryState()
+        val galleryState = viewModel.galleryState
         WriteScreen(
             pagerState = pagerState,
             galleryState = galleryState,
-            moodName = {Mood.values()[pageNumber].name},
+            moodName = { Mood.values()[pageNumber].name },
             onBackPress = onBackPress,
             onDelete = {
                 viewModel.deleteStory(
@@ -215,15 +218,15 @@ fun NavGraphBuilder.writeRoute(onBackPress: () -> Unit) {
                     }
                 )
             },
-            onTitleChanged = {viewModel.setTitle(title = it)},
-            onDescriptionChanged = {viewModel.setDescription(description = it)},
+            onTitleChanged = { viewModel.setTitle(title = it) },
+            onDescriptionChanged = { viewModel.setDescription(description = it) },
             uiState = uiState,
             onSaveClicked = {
                 viewModel.saveStory(
                     story = it.apply {
-                    mood = Mood.values()[pageNumber].name
+                        mood = Mood.values()[pageNumber].name
                     },
-                    onSuccess = {onBackPress()},
+                    onSuccess = { onBackPress() },
                     onError = { message ->
                         Toast.makeText(context, "Save Failed: $message", Toast.LENGTH_SHORT).show()
                     }
@@ -233,12 +236,14 @@ fun NavGraphBuilder.writeRoute(onBackPress: () -> Unit) {
                 viewModel.updateDateTime(zonedDateTime = it)
             },
             onImageSelect = {
-                galleryState.addImage(
-                    GalleryImage(
-                        image = it,
-                        remoteImagePath = ""
-                    )
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
+                viewModel.addImage(
+                    image = it,
+                    imageType = type
                 )
+            },
+            onImageDeleteClick = {
+                galleryState.removeImage(it)
             }
         )
     }

@@ -43,6 +43,8 @@ import com.project.mstory.presentation.components.GalleryUploader
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.project.mstory.model.GalleryImage
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 
@@ -59,6 +61,7 @@ fun WriteContent(
     paddingValues: PaddingValues,
     onSaveClicked: (Story) -> Unit,
     onImageSelect: (Uri) -> Unit,
+    onImageClicked: (GalleryImage) -> Unit,
 ){
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -157,7 +160,9 @@ fun WriteContent(
             GalleryUploader(
                 galleryState = galleryState,
                 onAddClicked = { focusManager.clearFocus() },
-                onImageClicked = {},
+                onImageClicked = {
+                    onImageClicked(it)
+                },
                 onImageSelected = onImageSelect
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -171,6 +176,7 @@ fun WriteContent(
                             Story().apply{
                                 this.title = uiState.title
                                 this.description = uiState.description
+                                this.images = galleryState.images.map { it.remoteImagePath }.toRealmList()
                             }
                         )
                     }else{
