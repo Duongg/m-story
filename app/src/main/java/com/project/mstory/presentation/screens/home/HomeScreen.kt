@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.project.mstory.R
 import com.project.mstory.data.repository.Stories
 import com.project.mstory.util.RequestState
+import java.time.ZonedDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,16 +52,30 @@ fun HomeScreen(
     onMenuClicked: () -> Unit,
     navigateToWrite: () -> Unit,
     onSignOutClicked: () -> Unit,
+    onDeleteAllStoriesClicked: () -> Unit,
     navigateToWriteWithArg: (String) -> Unit,
+    dateIsSelected: Boolean,
+    onDateSelected: (ZonedDateTime) -> Unit,
+    onDateReset: () -> Unit,
     stories: Stories,
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-   NavigationDrawer(drawerState = drawerState, onSignOutClicked = onSignOutClicked) {
+    NavigationDrawer(
+        drawerState = drawerState,
+        onSignOutClicked = onSignOutClicked,
+        onDeleteAllStoriesClicked = onDeleteAllStoriesClicked,
+    ) {
        Scaffold(
            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
            topBar = {
-               HomeTopBar(scrollBehavior = scrollBehavior, onMenuClicked = onMenuClicked)
+               HomeTopBar(
+                   scrollBehavior = scrollBehavior,
+                   onMenuClicked = onMenuClicked,
+                   dateIsSelected = dateIsSelected,
+                   onDateSelected = onDateSelected,
+                   onDateReset = onDateReset,
+               )
            },
            floatingActionButton = {
                FloatingActionButton(
@@ -103,6 +120,7 @@ fun HomeScreen(
 fun NavigationDrawer(
     drawerState: DrawerState,
     onSignOutClicked: () -> Unit,
+    onDeleteAllStoriesClicked: () -> Unit,
     content: @Composable () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -121,13 +139,24 @@ fun NavigationDrawer(
                    NavigationDrawerItem(
                        label = {
                            Row (modifier = Modifier.padding(horizontal = 16.dp)){
-                               Icon(painter = painterResource(id = R.drawable.google_logo), contentDescription = "",)
+                               Icon(painterResource(id = R.drawable.google_logo), contentDescription = "", tint = MaterialTheme.colorScheme.surface)
                                Spacer(modifier = Modifier.width(12.dp))
                                Text(text = "Sign Out")
                            }
                        },
                        selected = false,
                        onClick = onSignOutClicked
+                   )
+                   NavigationDrawerItem(
+                       label = {
+                           Row (modifier = Modifier.padding(horizontal = 16.dp)){
+                               Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = MaterialTheme.colorScheme.surface)
+                               Spacer(modifier = Modifier.width(12.dp))
+                               Text(text = "Delete All Stories")
+                           }
+                       },
+                       selected = false,
+                       onClick = onDeleteAllStoriesClicked
                    )
                }
            )

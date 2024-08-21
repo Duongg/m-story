@@ -132,14 +132,17 @@ fun NavGraphBuilder.homeRoute(
     onDataLoaded: () -> Unit,
 ) {
     composable(route = Screen.Home.route) {
-        val viewModel: HomeViewModel = viewModel()
+        val context = LocalContext.current
+        val viewModel: HomeViewModel = hiltViewModel()
         val stories by viewModel.stories
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         var signOutDialogOpened by remember {
             mutableStateOf(false)
         }
-
+        var deleteAllDialogOpened by remember {
+            mutableStateOf(false)
+        }
         LaunchedEffect(key1 = stories) {
             if (stories !is RequestState.Loading) {
                 onDataLoaded()
@@ -156,8 +159,18 @@ fun NavGraphBuilder.homeRoute(
             onSignOutClicked = {
                 signOutDialogOpened = true
             },
+            onDeleteAllStoriesClicked = {
+                deleteAllDialogOpened = true
+            },
             navigateToWriteWithArg = navigateToWriteWithArg,
             stories = stories,
+            dateIsSelected = viewModel.dateIsSelected,
+            onDateSelected = {
+                viewModel.getStories(it)
+            },
+            onDateReset = {
+                viewModel.getStories()
+            }
         )
 
         LaunchedEffect(key1 = Unit) {
@@ -179,6 +192,32 @@ fun NavGraphBuilder.homeRoute(
                         }
                     }
                 }
+            }
+        )
+        MStoryDialog(
+            title = "Delete All Stories",
+            message = "Are you sure want to delete all your stories ?",
+            dialogOpened = deleteAllDialogOpened,
+            onClosed = { deleteAllDialogOpened = false },
+            onConfirm = {
+                viewModel.deleteAllStories(
+                    onSuccess = {
+                        Toast.makeText(context, "All Stories Deleted Successfully", Toast.LENGTH_SHORT).show()
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    onError = {
+                        Toast.makeText(
+                            context, if (it.message == "No internet connection")
+                                "Please check your internet connection"
+                            else "All Stories Deleted Failed: ${it.message}", Toast.LENGTH_SHORT
+                        ).show()
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                )
             }
         )
     }

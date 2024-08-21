@@ -11,10 +11,14 @@ import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
 import io.realm.kotlin.types.ObjectId
+import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object MongoDB: MongoRepository {
     private val app = App.create(APP_ID)
@@ -53,6 +57,46 @@ object MongoDB: MongoRepository {
                             }
                         )
 
+                    }
+            }catch (e: Exception){
+                flow {
+                    emit(RequestState.Error(UserNotAuthenticatedException()))
+                }
+            }
+        }else{
+            flow {
+                emit(RequestState.Error(UserNotAuthenticatedException()))
+            }
+        }
+    }
+
+    override fun getFilterStories(zonedDateTime: ZonedDateTime): Flow<Stories> {
+        return if(user != null){
+            try {
+                realm.query<Story>(
+                    "ownerId == $0 AND date < $1 AND date > $2",
+                    user.identity,
+                    RealmInstant.from(
+                        LocalDateTime.of(
+                            zonedDateTime.toLocalDate().plusDays(1),
+                            LocalTime.MIDNIGHT
+                        ).toEpochSecond(zonedDateTime.offset), 0
+                    ),
+                    RealmInstant.from(
+                        LocalDateTime.of(
+                            zonedDateTime.toLocalDate(),
+                            LocalTime.MIDNIGHT
+                        ).toEpochSecond(zonedDateTime.offset), 0
+                    )
+                ).asFlow()
+                    .map { result ->
+                        RequestState.Success(
+                            data = result.list.groupBy {
+                                it.date.toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                            }
+                        )
                     }
             }catch (e: Exception){
                 flow {
@@ -139,6 +183,25 @@ object MongoDB: MongoRepository {
                 }
             }
         }else{
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun deleteAllStory(): RequestState<Boolean> {
+        return if (user != null) {
+            realm.write {
+                val stories = query<Story>(
+                    query = "ownerId == $0",
+                    user.identity
+                ).find()
+                try {
+                    delete(stories)
+                    RequestState.Success(data = true)
+                } catch (e: Exception) {
+                    RequestState.Error(e)
+                }
+            }
+        } else {
             RequestState.Error(UserNotAuthenticatedException())
         }
     }

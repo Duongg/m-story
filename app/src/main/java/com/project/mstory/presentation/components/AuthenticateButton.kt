@@ -84,9 +84,10 @@ fun AuthenticateButton(
             if (loadingState) {
                 Spacer(modifier = Modifier.width(16.dp))
                 CircularProgressIndicator(
-                    modifier = Modifier.width(16.dp),
+                    modifier = Modifier.width(16.dp).padding(top = 14.dp),
                     strokeWidth = 2.dp,
-                    color = progressIndicatorColor
+                    color = progressIndicatorColor,
+
                 )
             }
         }
