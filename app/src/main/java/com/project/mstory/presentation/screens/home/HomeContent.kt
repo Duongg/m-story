@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.project.mstory.model.Story
-import com.project.mstory.presentation.components.DateHeader
-import com.project.mstory.presentation.components.StoryHolder
+import com.project.mstory.util.DateHeader
+import com.project.mstory.util.StoryHolder
+import com.project.mstory.util.model.Story
 import java.time.LocalDate
 
 

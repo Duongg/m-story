@@ -12,26 +12,26 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.project.mstory.data.database.ImageToDeleteDao
-import com.project.mstory.data.database.ImageToUploadDao
-import com.project.mstory.data.database.entity.ImageToDelete
-import com.project.mstory.data.database.entity.ImageToUpload
-import com.project.mstory.data.repository.MongoDB
-import com.project.mstory.model.GalleryImage
-import com.project.mstory.model.GalleryState
-import com.project.mstory.model.Mood
-import com.project.mstory.model.Story
+import com.mstory.data.mongo.database.ImageToDeleteDao
+import com.mstory.data.mongo.database.ImageToUploadDao
+import com.mstory.data.mongo.database.entity.ImageToDelete
+import com.mstory.data.mongo.database.entity.ImageToUpload
+import com.mstory.data.mongo.repository.MongoDB
+import com.mstory.ui.GalleryImage
+import com.mstory.ui.GalleryState
 import com.project.mstory.util.Constant
 import com.project.mstory.util.RequestState
 import com.project.mstory.util.fetchImagesFromFirebase
+import com.project.mstory.util.model.Mood
+import com.project.mstory.util.model.Story
 import com.project.mstory.util.toRealmInstant
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.mongodb.kbson.ObjectId
 import java.time.ZonedDateTime
 import javax.inject.Inject
 
@@ -75,7 +75,7 @@ class WriteViewModel @Inject constructor(
     fun fetchSelectedStory() {
         if (uiState.selectedStoryId != null) {
             viewModelScope.launch(Dispatchers.Main) {
-                MongoDB.getSelectedStory(storyId = ObjectId.Companion.from(uiState.selectedStoryId!!))
+                MongoDB.getSelectedStory(storyId = ObjectId.invoke(uiState.selectedStoryId!!))
                     .catch {
                         emit(RequestState.Error(Exception("Story is already deleted")))
                     }
@@ -114,12 +114,12 @@ class WriteViewModel @Inject constructor(
     }
 
     private suspend fun updateStory(
-       story: Story,
-       onError: (String) -> Unit,
-       onSuccess: () -> Unit
+        story: Story,
+        onError: (String) -> Unit,
+        onSuccess: () -> Unit
     ){
        val result = MongoDB.updateStory(story = story.apply {
-           _id = ObjectId.Companion.from(uiState.selectedStoryId!!)
+           _id = ObjectId.invoke(uiState.selectedStoryId!!)
            date = if (uiState.updatedDateTime != null) {
                uiState.updatedDateTime!!
            } else {
@@ -191,7 +191,7 @@ class WriteViewModel @Inject constructor(
     ){
         viewModelScope.launch(Dispatchers.IO) {
             if (uiState.selectedStoryId != null) {
-                val result = MongoDB.deleteStory(id = ObjectId.from(uiState.selectedStoryId!!))
+                val result = MongoDB.deleteStory(id = ObjectId.invoke(uiState.selectedStoryId!!))
                 if (result is RequestState.Success) {
                     withContext(Dispatchers.Main) {
                         uiState.selectedStory?.let { deleteImagesFromFirebase(images = it.images) }

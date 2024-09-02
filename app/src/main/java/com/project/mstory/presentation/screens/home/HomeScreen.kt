@@ -39,8 +39,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.mstory.data.mongo.repository.Stories
 import com.project.mstory.R
-import com.project.mstory.data.repository.Stories
 import com.project.mstory.util.RequestState
 import java.time.ZonedDateTime
 
@@ -134,7 +134,7 @@ fun NavigationDrawer(
                            .height(250.dp),
                        contentAlignment = Alignment.Center
                    ) {
-                       Image(modifier = Modifier.size(200.dp), painter = painterResource(id = R.drawable.logo), contentDescription = "Logo image")
+                       Image(modifier = Modifier.size(200.dp), painter = painterResource(id = R.drawable.logo_1), contentDescription = "Logo image")
                    }
                    NavigationDrawerItem(
                        label = {

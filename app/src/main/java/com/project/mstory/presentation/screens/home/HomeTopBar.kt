@@ -39,7 +39,7 @@ fun HomeTopBar(
         scrollBehavior = scrollBehavior,
         title = { Text(text = "My Story") },
         navigationIcon = {
-            IconButton(onClick = { onMenuClicked }) {
+            IconButton(onClick = onMenuClicked) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Hamburger Menu Icon",
@@ -49,7 +49,7 @@ fun HomeTopBar(
         },
         actions = {
             if(dateIsSelected){
-                IconButton(onClick = { onDateReset }) {
+                IconButton(onClick = onDateReset) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close Icon",

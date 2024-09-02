@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.project.mstory.R
-import com.project.mstory.presentation.components.AuthenticateButton
+import com.mstory.ui.components.AuthenticateButton
 
 @Composable
 fun AuthenticationContent(
@@ -41,7 +41,7 @@ fun AuthenticationContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Image(modifier = Modifier.size(120.dp), painter = painterResource(id = R.drawable.logo), contentDescription = "" )
+                Image(modifier = Modifier.size(120.dp), painter = painterResource(id = R.drawable.logo_1), contentDescription = "" )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(text = stringResource(id = R.string.auth_title), fontSize = MaterialTheme.typography.titleLarge.fontSize)
                 Text(

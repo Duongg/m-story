@@ -4,20 +4,22 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
-import com.project.mstory.navigation.Screen
-import com.project.mstory.navigation.SetupNavGraph
-import com.project.mstory.ui.theme.MStoryTheme
-import com.project.mstory.util.Constant.APP_ID
 import com.google.firebase.FirebaseApp
-import com.project.mstory.data.database.ImageToDeleteDao
-import com.project.mstory.data.database.ImageToUploadDao
-import com.project.mstory.data.database.entity.ImageToDelete
-import com.project.mstory.util.retryDeletingImageToFirebase
-import com.project.mstory.util.retryUploadingImageToFirebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storageMetadata
+import com.mstory.data.mongo.database.ImageToDeleteDao
+import com.mstory.data.mongo.database.ImageToUploadDao
+import com.mstory.data.mongo.database.entity.ImageToDelete
+import com.mstory.data.mongo.database.entity.ImageToUpload
+import com.mstory.ui.theme.MStoryTheme
+import com.project.mstory.navigation.SetupNavGraph
+import com.project.mstory.util.Constant.APP_ID
+import com.project.mstory.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import io.realm.kotlin.mongodb.App
@@ -98,4 +100,25 @@ private fun getStartDestination(): String {
     val user = App.create(APP_ID).currentUser
     return if(user != null && user.loggedIn) Screen.Home.route
     else Screen.Authentication.route
+}
+
+private fun retryUploadingImageToFirebase(
+    imageToUpload: ImageToUpload,
+    onSuccess: () -> Unit
+){
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToUpload.remoteImagePath).putFile(
+        imageToUpload.imageUri.toUri(),
+        storageMetadata {  },
+        imageToUpload.sessionUri.toUri()
+    ).addOnSuccessListener { onSuccess() }
+}
+
+private fun retryDeletingImageToFirebase(
+    imageToDelete: ImageToDelete,
+    onSuccess: () -> Unit
+){
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToDelete.remoteImagePath).delete()
+        .addOnSuccessListener { onSuccess }
 }

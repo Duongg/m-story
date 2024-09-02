@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.MStory.MSplash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FBFCFF</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenBackground">#FFFFFF</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_1</item>
         <item name="postSplashScreenTheme">@style/Theme.MStory</item>
     </style>
 </resources>

@@ -2,8 +2,8 @@ package com.project.mstory.di
 
 import android.content.Context
 import androidx.room.Room
-import com.project.mstory.connectActivity.NetworkConnectivityObserve
-import com.project.mstory.data.database.ImagesDatabase
+import com.mstory.data.mongo.database.ImagesDatabase
+import com.project.mstory.util.connectActivity.NetworkConnectivityObserve
 import com.project.mstory.util.Constant.IMAGE_DATABASE
 import dagger.Module
 import dagger.Provides

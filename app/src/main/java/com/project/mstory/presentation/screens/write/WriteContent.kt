@@ -2,6 +2,7 @@ package com.project.mstory.presentation.screens.write
 
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,19 +39,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.project.mstory.model.GalleryState
-import com.project.mstory.model.Mood
-import com.project.mstory.model.Story
-import com.project.mstory.presentation.components.GalleryUploader
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.project.mstory.model.GalleryImage
+import com.mstory.ui.GalleryImage
+import com.mstory.ui.GalleryState
+import com.project.mstory.util.GalleryUploader
+import com.project.mstory.util.model.Mood
+import com.project.mstory.util.model.Story
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
+@OptIn( ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun WriteContent(
     uiState: UiState,
@@ -88,8 +88,7 @@ fun WriteContent(
         ) {
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalPager(
-                state = pagerState,
-                count = Mood.values().size
+                state = pagerState
             ) { page ->
                 AsyncImage(
                     modifier = Modifier.size(48.dp),
@@ -108,12 +107,14 @@ fun WriteContent(
                 placeholder = {
                     Text(text = "Title")
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Unspecified,
-                    disabledIndicatorColor = Color.Unspecified,
-                    unfocusedIndicatorColor = Color.Unspecified,
-                    placeholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
@@ -136,12 +137,14 @@ fun WriteContent(
                 placeholder = {
                     Text(text = "What's on your mind ?")
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Unspecified,
-                    disabledIndicatorColor = Color.Unspecified,
-                    unfocusedIndicatorColor = Color.Unspecified,
-                    placeholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next

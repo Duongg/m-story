@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.project.mstory.model.Story
-import com.project.mstory.presentation.components.MStoryDialog
+import com.project.mstory.util.model.Story
+import com.mstory.ui.components.MStoryDialog
 import com.project.mstory.util.toInstant
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog

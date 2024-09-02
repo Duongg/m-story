@@ -1,6 +1,8 @@
 package com.project.mstory.navigation
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -20,11 +22,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
-import com.project.mstory.data.repository.MongoDB
-import com.project.mstory.model.Mood
-import com.project.mstory.presentation.components.MStoryDialog
+import com.mstory.data.mongo.repository.MongoDB
+import com.project.mstory.util.model.Mood
+import com.mstory.ui.components.MStoryDialog
 import com.project.mstory.presentation.screens.auth.AuthenticationScreen
 import com.project.mstory.presentation.screens.auth.AuthenticationViewModel
 import com.project.mstory.presentation.screens.home.HomeScreen
@@ -34,6 +34,7 @@ import com.project.mstory.presentation.screens.write.WriteViewModel
 import com.project.mstory.util.Constant.APP_ID
 import com.project.mstory.util.Constant.WRITE_SCREEN_ARGUMENT_KEY
 import com.project.mstory.util.RequestState
+import com.project.mstory.util.Screen
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -223,7 +224,7 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 fun NavGraphBuilder.writeRoute(onBackPress: () -> Unit) {
     composable(
         route = Screen.Write.route,
@@ -234,7 +235,7 @@ fun NavGraphBuilder.writeRoute(onBackPress: () -> Unit) {
         })
     ) {
         val viewModel: WriteViewModel = hiltViewModel()
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(pageCount = { Mood.entries.size })
         val uiState = viewModel.uiState
         val pageNumber by remember {
             derivedStateOf { pagerState.currentPage }
