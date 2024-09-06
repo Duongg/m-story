@@ -2,6 +2,7 @@ package com.project.mstory.presentation.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,11 +37,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
 import com.mstory.data.mongo.repository.Stories
+import com.mstory.ui.theme.endColor
+import com.mstory.ui.theme.startColor
 import com.project.mstory.R
 import com.project.mstory.util.RequestState
 import java.time.ZonedDateTime
@@ -58,10 +65,12 @@ fun HomeScreen(
     onDateSelected: (ZonedDateTime) -> Unit,
     onDateReset: () -> Unit,
     stories: Stories,
+    username: String,
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     NavigationDrawer(
+        username = username,
         drawerState = drawerState,
         onSignOutClicked = onSignOutClicked,
         onDeleteAllStoriesClicked = onDeleteAllStoriesClicked,
@@ -80,7 +89,9 @@ fun HomeScreen(
            floatingActionButton = {
                FloatingActionButton(
                    modifier = Modifier.padding(end = padding.calculateEndPadding(LayoutDirection.Ltr)),
-                   onClick = navigateToWrite
+                   onClick = navigateToWrite,
+                   containerColor = MaterialTheme.colorScheme.primary,
+                   contentColor = Color.White
                ) {
                    Icon(imageVector = Icons.Default.Edit, contentDescription ="New story" )
                }
@@ -118,6 +129,7 @@ fun HomeScreen(
 
 @Composable
 fun NavigationDrawer(
+    username: String,
     drawerState: DrawerState,
     onSignOutClicked: () -> Unit,
     onDeleteAllStoriesClicked: () -> Unit,
@@ -128,18 +140,22 @@ fun NavigationDrawer(
         drawerContent = {
            ModalDrawerSheet(
                content = {
-                   Box(
-                       modifier = Modifier
-                           .fillMaxWidth()
-                           .height(250.dp),
-                       contentAlignment = Alignment.Center
-                   ) {
-                       Image(modifier = Modifier.size(200.dp), painter = painterResource(id = R.drawable.logo_1), contentDescription = "Logo image")
-                   }
                    NavigationDrawerItem(
                        label = {
                            Row (modifier = Modifier.padding(horizontal = 16.dp)){
-                               Icon(painterResource(id = R.drawable.google_logo), contentDescription = "", tint = MaterialTheme.colorScheme.surface)
+                               Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "")
+                               Spacer(modifier = Modifier.width(12.dp))
+                               Text(text = username)
+                           }
+                       },
+                       selected = false,
+                       onClick = {}
+                   )
+
+                   NavigationDrawerItem(
+                       label = {
+                           Row (modifier = Modifier.padding(horizontal = 16.dp)){
+                               Icon(painterResource(id = R.drawable.google_logo), contentDescription = "")
                                Spacer(modifier = Modifier.width(12.dp))
                                Text(text = "Sign Out")
                            }
@@ -150,7 +166,7 @@ fun NavigationDrawer(
                    NavigationDrawerItem(
                        label = {
                            Row (modifier = Modifier.padding(horizontal = 16.dp)){
-                               Icon(imageVector = Icons.Default.Delete, contentDescription = "", tint = MaterialTheme.colorScheme.surface)
+                               Icon(imageVector = Icons.Default.Delete, contentDescription = "")
                                Spacer(modifier = Modifier.width(12.dp))
                                Text(text = "Delete All Stories")
                            }

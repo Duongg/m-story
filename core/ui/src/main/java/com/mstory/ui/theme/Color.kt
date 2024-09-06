@@ -1,7 +1,8 @@
 package com.mstory.ui.theme
+import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF705D0D)
+val primaryLight = Color(0xFF0C1429)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFFCE186)
 val onPrimaryContainerLight = Color(0xFF221B00)
@@ -31,7 +32,7 @@ val inverseOnSurfaceLight = Color(0xFFF7F0E2)
 val inversePrimaryLight = Color(0xFFDEC56E)
 
 
-val primaryDark = Color(0xFFDEC56E)
+val primaryDark = Color(0xFF0C1429)
 val onPrimaryDark = Color(0xFF3B2F00)
 val primaryContainerDark = Color(0xFF554500)
 val onPrimaryContainerDark = Color(0xFFFCE186)
@@ -60,7 +61,7 @@ val inverseSurfaceDark = Color(0xFFE9E2D4)
 val inverseOnSurfaceDark = Color(0xFF333027)
 val inversePrimaryDark = Color(0xFF705D0D)
 
-val NeutralColor = Color(0xFF78909C)
+val NeutralColor = Color(0xFF0C1429)
 val HappyColor = Color(0xFFFFEE58)
 val RomanticColor = Color(0xFFEC407A)
 val CalmColor = Color(0xFF42A5F5)
@@ -76,6 +77,9 @@ val ShamefulColor = Color(0xFF7E57C2)
 val HumorousColor = Color(0xFFFFCA28)
 val SuspiciousColor = Color(0xFFD4E157)
 val BoredColor = Color(0xFF26C6DA)
+
+val startColor = Color(0xFF01FAFC)
+val endColor = Color(0xFF034B9D)
 
 
 

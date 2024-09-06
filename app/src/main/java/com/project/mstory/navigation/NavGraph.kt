@@ -171,7 +171,8 @@ fun NavGraphBuilder.homeRoute(
             },
             onDateReset = {
                 viewModel.getStories()
-            }
+            },
+            username = viewModel.username
         )
 
         LaunchedEffect(key1 = Unit) {

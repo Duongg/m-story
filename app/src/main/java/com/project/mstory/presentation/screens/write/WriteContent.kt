@@ -3,6 +3,7 @@ package com.project.mstory.presentation.screens.write
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -31,8 +33,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -41,6 +47,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mstory.ui.GalleryImage
 import com.mstory.ui.GalleryState
+import com.mstory.ui.theme.endColor
+import com.mstory.ui.theme.startColor
 import com.project.mstory.util.GalleryUploader
 import com.project.mstory.util.model.Mood
 import com.project.mstory.util.model.Story
@@ -48,7 +56,7 @@ import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 
-@OptIn( ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WriteContent(
     uiState: UiState,
@@ -186,9 +194,18 @@ fun WriteContent(
                         Toast.makeText(context, "Field cannot be empty",Toast.LENGTH_SHORT).show()
                     }
                 },
-                shape = Shapes().small
+                shape = Shapes().small,
             ) {
-                Text(text = "Save")
+                Text(
+                    modifier = Modifier.graphicsLayer(alpha = 0.99f)
+                        .drawWithCache {
+                            val brush = Brush.horizontalGradient(listOf(startColor, endColor))
+                            onDrawWithContent {
+                                drawContent()
+                                drawRect(brush, blendMode = BlendMode.SrcAtop)
+                            }
+                        },
+                    text = "Save")
             }
         }
     }

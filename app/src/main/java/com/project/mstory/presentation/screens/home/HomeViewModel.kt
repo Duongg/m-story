@@ -38,6 +38,9 @@ class HomeViewModel @Inject constructor(
     var dateIsSelected by mutableStateOf(false)
         private set
 
+    var username by mutableStateOf("")
+        private set
+
     init {
         getStories()
         viewModelScope.launch {
@@ -48,6 +51,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getStories(zonedDateTime: ZonedDateTime? = null) {
+        username = FirebaseAuth.getInstance().currentUser?.displayName.toString()
         dateIsSelected = zonedDateTime != null
         stories.value = RequestState.Loading
         if (dateIsSelected && zonedDateTime != null) {

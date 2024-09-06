@@ -35,6 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -44,6 +48,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mstory.ui.theme.Elevation
+import com.mstory.ui.theme.endColor
+import com.mstory.ui.theme.startColor
 import com.project.mstory.util.fetchImagesFromFirebase
 import com.project.mstory.util.model.Mood
 import com.project.mstory.util.model.Story
@@ -237,6 +243,14 @@ fun ShowGalleryButton(
 ) {
     TextButton(onClick = onClick) {
         Text(
+           modifier = Modifier.graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    val brush = Brush.horizontalGradient(listOf(startColor, endColor))
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(brush, blendMode = BlendMode.SrcAtop)
+                    }
+                },
             text = if (galleryOpened) {
                 if(galleryLoading) "Loading..." else "Hide Gallery"
             }else{

@@ -14,23 +14,23 @@ enum class Mood(
 ) {
     Neutral(
         icon = R.drawable.neutral,
-        contentColor = Color.Black,
+        contentColor = Color.White,
         containerColor = NeutralColor,
     ),
     Happy(
         icon = R.drawable.haha,
-        contentColor = Color.Black,
-        containerColor = HappyColor,
+        contentColor = Color.White,
+        containerColor = NeutralColor,
     ),
     Angry(
         icon = R.drawable.angry,
         contentColor = Color.White,
-        containerColor = AngryColor,
+        containerColor = NeutralColor,
     ),
     Sad(
         icon = R.drawable.sad,
         contentColor = Color.White,
-        containerColor = BoredColor,
+        containerColor = NeutralColor,
     )
 
 }
