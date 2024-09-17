@@ -113,7 +113,10 @@ dependencies {
 
     // One-Tap Compose
     implementation libs.onetapcompose
-
+    implementation libs.google.signIn
+    implementation libs.google.id.option
+    implementation libs.google.credential.service
+    implementation libs.google.credential
     // Desugar JDK
     coreLibraryDesugaring libs.desugar.jdk.libs
 

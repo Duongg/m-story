@@ -4,6 +4,8 @@ import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
@@ -16,8 +18,10 @@ import com.mstory.data.mongo.database.ImageToDeleteDao
 import com.mstory.data.mongo.database.ImageToUploadDao
 import com.mstory.data.mongo.database.entity.ImageToDelete
 import com.mstory.data.mongo.database.entity.ImageToUpload
+import com.mstory.data.mongo.model.DataProvider
 import com.mstory.ui.theme.MStoryTheme
 import com.project.mstory.navigation.SetupNavGraph
+import com.project.mstory.presentation.screens.auth.AuthenticationViewModel
 import com.project.mstory.util.Constant.APP_ID
 import com.project.mstory.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,6 +48,7 @@ class MainActivity : ComponentActivity() {
     lateinit var imageToDeleteDao: ImageToDeleteDao
 
     private var keepSplashOpened = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {

@@ -45,6 +45,12 @@ dependencies {
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation (libs.google.signIn)
+    implementation (libs.google.id.option)
+    implementation (libs.google.credential)
+    implementation (libs.firebase.auth.ktx)
+
+    implementation libs.androidx.lifecycle.runtime.compose
     ksp(libs.androidx.room.compiler)
 
     implementation(project(":core:util"))

@@ -1,5 +1,10 @@
 package com.mstory.ui.components
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -49,7 +54,6 @@ fun AuthenticateButton(
     onClick: () -> Unit,
 ) {
     var buttonText by remember { mutableStateOf(primaryText) }
-
     LaunchedEffect(key1 = loadingState){ buttonText = if(loadingState) secondaryText else primaryText }
 
     Surface(
@@ -87,7 +91,6 @@ fun AuthenticateButton(
                     modifier = Modifier.width(16.dp).padding(top = 14.dp),
                     strokeWidth = 2.dp,
                     color = progressIndicatorColor,
-
                 )
             }
         }
