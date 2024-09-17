@@ -19,7 +19,6 @@ lifecycleRuntimeKtx = "2.8.1"
 material3 = "1.2.1"
 messagebarcompose = "1.0.8"
 navigationCompose = "2.7.7"
-onetapcompose = "1.0.12"
 roomRuntime = "2.6.1"
 ui = "1.6.7"
 agp = "8.2.2"
@@ -66,7 +65,6 @@ realm-kotlin-gradle-plugin = { module = "io.realm.kotlin:gradle-plugin", version
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 library-sync = { module = "io.realm.kotlin:library-sync", version.ref = "librarySync" }
 messagebarcompose = { module = "com.github.stevdza-san:MessageBarCompose", version.ref = "messagebarcompose" }
-onetapcompose = { module = "com.github.stevdza-san:OneTapCompose", version.ref = "onetapcompose" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 google-signIn = {group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleSigIn"}
